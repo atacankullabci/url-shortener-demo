@@ -1,6 +1,6 @@
-package com.atancankullabci.urlshortenerdemo.repository;
+package com.atancankullabci.urlshortenerdemo.domain.port.out;
 
-import com.atancankullabci.urlshortenerdemo.entity.ShortUrl;
+import com.atancankullabci.urlshortenerdemo.domain.model.ShortUrl;
 
 import java.util.Optional;
 
