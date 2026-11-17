@@ -18,6 +18,7 @@ public class ConcurrentHashMapRepository implements ShortUrlRepository {
 
     @Override
     public Optional<ShortUrl> get(String hash) {
-        return Optional.empty();
+        return Optional.ofNullable(mapRepo.get(hash));
     }
+
 }

@@ -1,6 +1,7 @@
 package com.atancankullabci.urlshortenerdemo.adapter.in.web;
 
 import com.atancankullabci.urlshortenerdemo.domain.UrlShortenerService;
+import com.atancankullabci.urlshortenerdemo.domain.model.ShortUrl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,13 +25,18 @@ public class UrlShortenerController {
     @PostMapping("/api/urls")
     public ResponseEntity<ShortenedUrlResponseDTO> shorten(@RequestBody UrlShortenerRequestDTO requestDTO) {
         String hashCode = this.urlShortenerService.createHashCode(requestDTO.longUrl());
-        return ResponseEntity.ok(new ShortenedUrlResponseDTO(baseUrl.concat(hashCode).trim()));
+        ShortenedUrlResponseDTO body = new ShortenedUrlResponseDTO(baseUrl.concat(hashCode).trim());
+        return ResponseEntity.created(URI.create(body.shortUrl)).body(body);
     }
 
     @GetMapping("/{code}")
     public ResponseEntity<?> redirect(@PathVariable("code") String code) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(this.urlShortenerService.getLongUrl(code)));
+        ShortUrl shortUrl = this.urlShortenerService.getLongUrl(code);
+        if (shortUrl == null) {
+            return ResponseEntity.notFound().build();
+        }
+        headers.setLocation(URI.create(shortUrl.longUrl()));
         // Return HTTP 302 Found
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
